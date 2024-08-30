@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "My First Extension",
+    "version": "1.0",
+    "description": "Hide links containing specific keywords.",
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+      }
+    },
+    "permissions": ["activeTab", "scripting"],
+    "content_scripts": [
+      {
+        "matches": ["*://*.seek.com.au/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
