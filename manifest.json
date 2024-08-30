@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "My First Extension",
     "version": "1.0",
-    "description": "Hide links containing specific keywords.",
+    "description": "Display tags before open job cards.",
     "action": {
       "default_popup": "popup.html",
       "default_icon": {

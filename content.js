@@ -1,5 +1,3 @@
-const positions = document.querySelectorAll("article");
-
 // send request to omni
 // return
 // prRequest: bool
@@ -66,55 +64,66 @@ const catchPage = async (url) => {
   }
 };
 
-// start
-positions.forEach(async (position) => {
-  const title = position.querySelector("h3 > div > a");
-  const data = await catchPage(title.href);
+const fetchToken = async () => {
+  const url =
+    "https://xzvzcrj4yh.execute-api.ap-southeast-1.amazonaws.com/get-token-api";
+  try {
+    const response = await fetch(url);
 
-  const response = await requestGPT(APPKEY, data.jobDescription); // update to env parameter
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-  switch (response.yearOfExperience) {
-    case 0:
+    const data = await response.json();
+
+    APPKEY = data.token;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+async function main() {
+  let APPKEY = "";
+  const positions = document.querySelectorAll("article");
+
+  await fetchToken();
+
+  positions.forEach(async (position) => {
+    const title = position.querySelector("h3 > div > a");
+    const data = await catchPage(title.href);
+    const response = await requestGPT(APPKEY, data.jobDescription);
+
+    if (response.yearOfExperience < 3)
       position.style.backgroundColor = "lightgreen";
-      break;
-    case 1:
-      position.style.backgroundColor = "lightblue";
-      break;
-    case 2:
-      position.style.backgroundColor = "lightblue";
-      break;
-    case 3:
-      position.style.backgroundColor = "yellow";
-      break;
-    case 4:
-      position.style.backgroundColor = "yellow";
-      break;
-    default:
+    else if (response.yearOfExperience > 4)
       position.style.backgroundColor = "orange";
-  }
 
-  if (response.prRequest) position.style.backgroundColor = "red";
-  else {
-    const tags = response.keyTechStack;
+    if (response.prRequest) position.style.backgroundColor = "red";
+    else {
+      const tags = response.keyTechStack;
 
-    tags.forEach((tag) => {
-      const tagElement = document.createElement("div");
-      tagElement.textContent = tag;
-      tagElement.className = "tag";
+      tags.forEach((tag) => {
+        const tagElement = document.createElement("div");
+        tagElement.textContent = tag;
+        tagElement.className = "tag";
 
-      // Apply styles
-      tagElement.style.backgroundColor = "#007bff";
-      tagElement.style.color = "#ffffff";
-      tagElement.style.padding = "8px 16px";
-      tagElement.style.borderRadius = "12px";
-      tagElement.style.display = "inline-block";
-      tagElement.style.margin = "5px";
-      tagElement.style.border = "1px solid rgba(255, 255, 255, 0.1)";
-      tagElement.style.fontSize = "14px";
-      tagElement.style.cursor = "pointer";
-      tagElement.style.transition = "all 0.3s ease";
+        // Apply styles
+        tagElement.style.backgroundColor = "#007bff";
+        tagElement.style.color = "#ffffff";
+        tagElement.style.padding = "8px 16px";
+        tagElement.style.borderRadius = "12px";
+        tagElement.style.display = "inline-block";
+        tagElement.style.margin = "5px";
+        tagElement.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+        tagElement.style.fontSize = "14px";
+        tagElement.style.cursor = "pointer";
+        tagElement.style.transition = "all 0.3s ease";
 
-      title.parentNode.appendChild(tagElement);
-    });
-  }
-});
+        title.parentNode.appendChild(tagElement);
+      });
+    }
+  });
+}
+
+// start
+main();

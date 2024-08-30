@@ -1,7 +1,20 @@
 import requestGPT from "./requestGPT";
 
 describe("requestGPT", () => {
-  const APPKEY = process.env.OPENAI_API_KEY;
+  let APPKEY = "";
+  async function fetchToken() {
+    const response = await fetch(
+      "https://xzvzcrj4yh.execute-api.ap-southeast-1.amazonaws.com/get-token-api"
+    );
+    const data = await response.json();
+    return data.token;
+  }
+
+  // Use beforeAll to handle asynchronous setup before running tests
+  beforeAll(async () => {
+    APPKEY = await fetchToken();
+  });
+
   const jdWithoutPr =
     "Are you a junior to mid level Java developer?  We're looking for someone with 1 to 3 years experience.Here's your chance to hone your skills and develop further working on interesting software, mentored by some of Melbourne's smartest Java developers. It's an opportunity to learn ReactJS too!The right person for this job:has somewhere in the range of 1 to 3 years Java development experiencehas Java programming experiencloves development and wants to learn moreJavaScript / React / Amazon / Docker / Kubernetes experience would be a bonus but is not a requirement - you can learn all that on the job.has great communication skillscan work independently and get things doneIn this role:You'll be working with a team of Melbourne's best Java developersYou'll be working on sophisticated back end systemsAbout 20% of your time will be working on React based front end systemsYou'll be working to make the companies product more cloud native so you will be learning about Amazon Web Services.";
   const jdWithPr =
@@ -26,11 +39,13 @@ describe("requestGPT", () => {
   };
   it("request jd without pr request", async () => {
     const response = await requestGPT(APPKEY, jdWithoutPr);
-    response.keyTechStack.forEach(element => {
-        expect(mockResponseWithoutPr.keyTechStack).toContain(element);
+    response.keyTechStack.forEach((element) => {
+      expect(mockResponseWithoutPr.keyTechStack).toContain(element);
     });
     expect(mockResponseWithoutPr.prRequest).toBe(response.prRequest);
-    expect(mockResponseWithoutPr.yearOfExperience).toBe(response.yearOfExperience);
+    expect(mockResponseWithoutPr.yearOfExperience).toBe(
+      response.yearOfExperience
+    );
   });
 
   it("request jd with pr request", async () => {
@@ -38,4 +53,3 @@ describe("requestGPT", () => {
     expect(mockResponseWithPr).toEqual(response);
   });
 });
-
