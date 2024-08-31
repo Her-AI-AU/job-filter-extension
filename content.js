@@ -1,3 +1,4 @@
+let APPKEY = "";
 // send request to omni
 // return
 // prRequest: bool
@@ -83,7 +84,6 @@ const fetchToken = async () => {
 };
 
 async function main() {
-  let APPKEY = "";
   const positions = document.querySelectorAll("article");
 
   await fetchToken();
