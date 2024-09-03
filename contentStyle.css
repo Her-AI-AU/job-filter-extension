@@ -1,0 +1,31 @@
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.tag-border {
+  position: relative;
+  display: inline-block;
+  padding: 2px;
+  border-radius: 9999px;
+  background-image: linear-gradient(to right, #a855f7, #ef4444);
+}
+
+.tag-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background-color: white;
+  border-radius: 9999px;
+}
+
+.tag-text {
+  color: #1f2937;
+  font-family: Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}

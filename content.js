@@ -1,4 +1,5 @@
 let APPKEY = "";
+const yearOE = 3;
 // send request to omni
 // return
 // prRequest: bool
@@ -13,7 +14,7 @@ const requestGPT = async (APPKEY, jobDescription) => {
       {
         role: "system",
         content:
-          "You are a helpful job hunting assistant. You read job description and look for the reqirment of the job. You should return a json data. The return data should be {prRequest: bool, keyTechStack:[], yearOfExperience: num}. Remove ```json``` in return data. If years of experience is a range, it should return minimum value. prRequest should return if any request of permanent resident / citizen / minimum Negative Vetting or higher clearance exist in job description.",
+          "You are a helpful job hunting assistant. You read job description and look for the reqirment of the job. You should return a json data. The return data should be {prRequest: bool, keyTechStack:[], yearOfExperience: num}. Every keys in return data should be quoted by `\"`. Remove ```json``` in return data. If years of experience is a range, it should return minimum value. prRequest should return if any request of permanent resident / citizen / minimum Negative Vetting or higher clearance exist in job description. Do not wrap in keyTechStack.",
       },
       {
         role: "user",
@@ -93,34 +94,36 @@ async function main() {
     const data = await catchPage(title.href);
     const response = await requestGPT(APPKEY, data.jobDescription);
 
-    if (response.yearOfExperience < 3)
+    if (response.yearOfExperience <= yearOE)
       position.style.backgroundColor = "lightgreen";
-    else if (response.yearOfExperience > 4)
+    else if (response.yearOfExperience > yearOE)
       position.style.backgroundColor = "orange";
 
     if (response.prRequest) position.style.backgroundColor = "red";
     else {
+      // add a tech stack tag-list
       const tags = response.keyTechStack;
+      const tagList = document.createElement("div");
+      tagList.className = "tag-list";
 
       tags.forEach((tag) => {
-        const tagElement = document.createElement("div");
-        tagElement.textContent = tag;
-        tagElement.className = "tag";
+        // create tag elements
+        const tagBorderElement = document.createElement("div");
+        tagBorderElement.className = "tag-border";
 
-        // Apply styles
-        tagElement.style.backgroundColor = "#007bff";
-        tagElement.style.color = "#ffffff";
-        tagElement.style.padding = "8px 16px";
-        tagElement.style.borderRadius = "12px";
-        tagElement.style.display = "inline-block";
-        tagElement.style.margin = "5px";
-        tagElement.style.border = "1px solid rgba(255, 255, 255, 0.1)";
-        tagElement.style.fontSize = "14px";
-        tagElement.style.cursor = "pointer";
-        tagElement.style.transition = "all 0.3s ease";
+        const tagInnerElement = document.createElement("div");
+        tagInnerElement.className = "tag-inner";
 
-        title.parentNode.appendChild(tagElement);
+        const contextElement = document.createElement("span");
+        contextElement.className = "tag-text";
+        contextElement.textContent = tag;
+
+        tagInnerElement.appendChild(contextElement);
+        tagBorderElement.appendChild(tagInnerElement);
+        tagList.appendChild(tagBorderElement);
       });
+
+      title.parentNode.appendChild(tagList);
     }
   });
 }
