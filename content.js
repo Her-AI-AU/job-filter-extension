@@ -14,7 +14,7 @@ const requestGPT = async (APPKEY, jobDescription) => {
       {
         role: "system",
         content:
-          "You are a helpful job hunting assistant. You read job description and look for the reqirment of the job. You should return a json data. The return data should be {prRequest: bool, keyTechStack:[], yearOfExperience: num}. Every keys in return data should be quoted by `\"`. Remove ```json``` in return data. If years of experience is a range, it should return minimum value. prRequest should return if any request of permanent resident / citizen / minimum Negative Vetting or higher clearance exist in job description. Do not wrap in keyTechStack.",
+          'You are a helpful job hunting assistant. You read job description and look for the reqirment of the job. You should return a json data. The return data should be {prRequest: bool, keyTechStack:[], yearOfExperience: num}. Every keys in return data should be quoted by `"`. Remove ```json``` in return data. If years of experience is a range, it should return minimum value. prRequest should return if any request of permanent resident / citizen / minimum Negative Vetting or higher clearance exist in job description. Do not wrap in keyTechStack.',
       },
       {
         role: "user",
@@ -78,7 +78,7 @@ const fetchToken = async () => {
 
     const data = await response.json();
 
-    APPKEY = data.token;
+    APPKEY = data.token;r
   } catch (error) {
     console.error("Error:", error);
   }
@@ -95,11 +95,12 @@ async function main() {
     const response = await requestGPT(APPKEY, data.jobDescription);
 
     if (response.yearOfExperience <= yearOE)
-      position.style.backgroundColor = "lightgreen";
+      position.setAttribute("style", "border: 2px solid #40eb84 !important;");
     else if (response.yearOfExperience > yearOE)
-      position.style.backgroundColor = "orange";
+      position.setAttribute("style", "border: 2px solid #ae54ef !important;");
 
-    if (response.prRequest) position.style.backgroundColor = "red";
+    if (response.prRequest)
+      position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
     else {
       // add a tech stack tag-list
       const tags = response.keyTechStack;
