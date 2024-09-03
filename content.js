@@ -78,7 +78,7 @@ const fetchToken = async () => {
 
     const data = await response.json();
 
-    APPKEY = data.token;r
+    APPKEY = data.token;
   } catch (error) {
     console.error("Error:", error);
   }
