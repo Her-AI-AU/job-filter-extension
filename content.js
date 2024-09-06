@@ -98,34 +98,32 @@ async function main() {
       position.setAttribute("style", "border: 2px solid #40eb84 !important;");
     else if (response.yearOfExperience > yearOE)
       position.setAttribute("style", "border: 2px solid #ae54ef !important;");
-
-    if (response.prRequest)
+    else if (response.prRequest)
       position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
-    else {
-      // add a tech stack tag-list
-      const tags = response.keyTechStack;
-      const tagList = document.createElement("div");
-      tagList.className = "tag-list";
 
-      tags.forEach((tag) => {
-        // create tag elements
-        const tagBorderElement = document.createElement("div");
-        tagBorderElement.className = "tag-border";
+    // add a tech stack tag-list
+    const tags = response.keyTechStack;
+    const tagList = document.createElement("div");
+    tagList.className = "tag-list";
 
-        const tagInnerElement = document.createElement("div");
-        tagInnerElement.className = "tag-inner";
+    tags.forEach((tag) => {
+      // create tag elements
+      const tagBorderElement = document.createElement("div");
+      tagBorderElement.className = "tag-border";
 
-        const contextElement = document.createElement("span");
-        contextElement.className = "tag-text";
-        contextElement.textContent = tag;
+      const tagInnerElement = document.createElement("div");
+      tagInnerElement.className = "tag-inner";
 
-        tagInnerElement.appendChild(contextElement);
-        tagBorderElement.appendChild(tagInnerElement);
-        tagList.appendChild(tagBorderElement);
-      });
+      const contextElement = document.createElement("span");
+      contextElement.className = "tag-text";
+      contextElement.textContent = tag;
 
-      title.parentNode.appendChild(tagList);
-    }
+      tagInnerElement.appendChild(contextElement);
+      tagBorderElement.appendChild(tagInnerElement);
+      tagList.appendChild(tagBorderElement);
+    });
+
+    title.parentNode.appendChild(tagList);
   });
 }
 
