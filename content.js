@@ -94,12 +94,12 @@ async function main() {
     const data = await catchPage(title.href);
     const response = await requestGPT(APPKEY, data.jobDescription);
 
-    if (response.yearOfExperience <= yearOE)
+    if (response.prRequest)
+      position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
+    else if (response.yearOfExperience <= yearOE)
       position.setAttribute("style", "border: 2px solid #40eb84 !important;");
     else if (response.yearOfExperience > yearOE)
-      position.setAttribute("style", "border: 2px solid #ae54ef !important;");
-    else if (response.prRequest)
-      position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
+      position.setAttribute("style", "border: 2px solid #ae54ef !important;");    
 
     // add a tech stack tag-list
     const tags = response.keyTechStack;
