@@ -1,31 +1,23 @@
-let APPKEY = "";
 const yearOE = 3;
-// send request to omni
-// return
-// prRequest: bool
-// keyTechStack: array
-// yearOfExperience: num
-const requestGPT = async (APPKEY, jobDescription) => {
-  const url = "https://api.openai.com/v1/chat/completions";
+/* 
+Send request to Lambda api
+Return data:
+{
+  prRequest: bool
+  keyTechStack: array
+  yearOfExperience: num
+}
+*/
+const requestLambda = async (jobDescription) => {
+  const url =
+    "https://4dvwxfk9sf.execute-api.ap-southeast-1.amazonaws.com/default/summarise-jd";
 
   const data = {
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content:
-          'You are a helpful job hunting assistant. You read job description and look for the reqirment of the job. You should return a json data. The return data should be {prRequest: bool, keyTechStack:[], yearOfExperience: num}. Every keys in return data should be quoted by `"`. Remove ```json``` in return data. If years of experience is a range, it should return minimum value. prRequest should return if any request of permanent resident / citizen / minimum Negative Vetting or higher clearance exist in job description. Do not wrap in keyTechStack.',
-      },
-      {
-        role: "user",
-        content: jobDescription,
-      },
-    ],
+    jobDescription: jobDescription,
   };
 
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${APPKEY}`,
   };
 
   try {
@@ -40,9 +32,8 @@ const requestGPT = async (APPKEY, jobDescription) => {
     }
 
     const responseData = await response.json();
-    const parsedResponse = JSON.parse(responseData.choices[0].message.content);
 
-    return parsedResponse;
+    return responseData;
   } catch (error) {
     console.error("Error:", error);
     return null;
@@ -66,40 +57,20 @@ const catchPage = async (url) => {
   }
 };
 
-const fetchToken = async () => {
-  const url =
-    "https://xzvzcrj4yh.execute-api.ap-southeast-1.amazonaws.com/get-token-api";
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-
-    APPKEY = data.token;
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 async function main() {
   const positions = document.querySelectorAll("article");
-
-  await fetchToken();
 
   positions.forEach(async (position) => {
     const title = position.querySelector("h3 > div > a");
     const data = await catchPage(title.href);
-    const response = await requestGPT(APPKEY, data.jobDescription);
+    const response = await requestLambda(data.jobDescription);
 
     if (response.prRequest)
       position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
-    if (response.yearOfExperience <= yearOE)
+    else if (response.yearOfExperience <= yearOE)
       position.setAttribute("style", "border: 2px solid #40eb84 !important;");
     else if (response.yearOfExperience > yearOE)
-      position.setAttribute("style", "border: 2px solid #ae54ef !important;");    
+      position.setAttribute("style", "border: 2px solid #ae54ef !important;");
 
     // add a tech stack tag-list
     const tags = response.keyTechStack;

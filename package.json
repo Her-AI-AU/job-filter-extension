@@ -10,6 +10,7 @@
     "openai": "^4.56.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "zip": "zip -r function.zip . -x \"node_modules/*\" \"jest/*\" \".*\""
   }
 }

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Job Card Scanning",
-  "version": "1.3",
+  "version": "1.4",
   "description": "Display tags before opening job cards.",
   "action": {
     "default_popup": "popup.html",
