@@ -96,7 +96,7 @@ async function main() {
 
     if (response.prRequest)
       position.setAttribute("style", "border: 2px solid #eb5e37 !important;");
-    else if (response.yearOfExperience <= yearOE)
+    if (response.yearOfExperience <= yearOE)
       position.setAttribute("style", "border: 2px solid #40eb84 !important;");
     else if (response.yearOfExperience > yearOE)
       position.setAttribute("style", "border: 2px solid #ae54ef !important;");    
